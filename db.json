@@ -1,0 +1,34 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    },
+    {
+      "id": 2,
+      "title": "Hello I'm the test",
+      "author": "Lapi"
+    },
+    {
+      "id": 3,
+      "title": "Hello I'm the post test",
+      "author": "Berto"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    },
+    {
+      "id": 2,
+      "body": "The test comment",
+      "postId": 2
+    }
+  ],
+  "profile": {
+    "name": "Lauritapear"
+  }
+}
