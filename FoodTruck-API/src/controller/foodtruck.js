@@ -67,5 +67,35 @@ api.delete('/:id',(req,res) => {
   });
 });
 
+//Add review for foodtruck ID
+//'/v1/foodtruck/reviews/add/:id'
+api.post('/reviews/add/:id', (req, res) => {
+  FoodTruck.findById(req.params.id, (err,foodtruck) => {
+    if(err){
+      res.send(err);
+    }
+    let newReview = new Review();
+
+    newReview.title = req.body.title;
+    newReview.text = req.body.text;
+    newReview.foodtruck = req.body._id;
+
+    //since mongo db is not relational then we need to save it in both foodtruck and reviews
+    newReview.save ((err,review) =>{
+      if(err){
+        res.send(err);
+      }
+      foodtruck.reviews.push(newReview);
+      foodtruck.save(err =>{
+        if(err){
+          res.send(err);
+        }
+        res.json({ message: 'FoodTruck review added'});
+      });
+    });
+  });
+});
+
+
   return api;
 }
