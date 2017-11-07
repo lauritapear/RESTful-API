@@ -1,14 +1,19 @@
 import mongoosee from 'mongoose';
 import {Router} from 'express';
 import FoodTruck from '../model/foodtruck';
+import Review from '../model/review';
+import bodyParser from 'body-parser';
 
 export default ({config, db}) => {
   let api = Router();
 
   // '/v1/foodtruck/add' -- Create
   api.post('/add', (req, res) => {
-    let newFoodTruck = new foodtruck();
+    let newFoodTruck = new FoodTruck();
     newFoodTruck.name = req.body.name;
+    newFoodTruck.foodtype = req.body.foodtype;
+    newFoodTruck.avgcost = req.body.avgcost;
+    newFoodTruck.geometry.coordinates = req.body.geometry.coordinates;
 
     //=> this is called fat arrow function
     newFoodTruck.save(err =>{
@@ -21,7 +26,7 @@ export default ({config, db}) => {
 
 //'/v1/foodtruck' -- Read
 api.get('/',(req,res) => {
-  foodtruck.find({}, (err,foodtrucks) => {
+  FoodTruck.find({}, (err,foodtrucks) => {
     if(err){
       res.send(err);
     }
@@ -78,7 +83,7 @@ api.post('/reviews/add/:id', (req, res) => {
 
     newReview.title = req.body.title;
     newReview.text = req.body.text;
-    newReview.foodtruck = req.body._id;
+    newReview.foodtruck = foodtruck._id;
 
     //since mongo db is not relational then we need to save it in both foodtruck and reviews
     newReview.save ((err,review) =>{
@@ -96,6 +101,16 @@ api.post('/reviews/add/:id', (req, res) => {
   });
 });
 
+// get reviews for a specific foodtruck id
+// '/v1/foodtruck/reviews/:id'
+api.get('/reviews/:id', (req, res) => {
+  Review.find({foodtruck: req.params.id}, (err, reviews) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(reviews);
+  });
+});
 
   return api;
 }
